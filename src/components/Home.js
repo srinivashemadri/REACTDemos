@@ -1,15 +1,52 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Hoc from './higherordercomponent';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import Pokeball from '../pokeball.jpg';
 
-const Home =()=>{
+class Home extends Component{
+    state ={
+        publications : []
+    }
+    componentDidMount(){
+        axios.get('https://jsonplaceholder.typicode.com/posts').then(res=>{
+            
+            this.setState({
+                publications:res.data.slice(0,19)
+            })
+            console.log(this.state)
+        })
+        
+    }
+
+    render(){
+        const {publications} = this.state;
+        const publicationslist = publications.length? (
+            publications.map( publication =>{
+                return(
+                    <div className="card" key={publication.id}>
+                        <div className="card-content">
+                            <img src={Pokeball}></img>
+                            <Link to={'/' + publication.id}>
+                                <span className="card-title" >{publication.title}</span>
+                                
+                            </Link>
+                            <p>{publication.body}</p>
+                        </div>
+
+                    </div>
+                )
+            })
+        ):(
+            <div>No Posts Yet</div>
+        )
     return(
         <div className="container">
-            <h4 className="center">Home</h4>
-            <p>Rational, skimming readers do not treat all parts of paragraphs in the same way. In search of the quickest possible appreciation of what is being said, they pay special attention to the beginning and ends of paragraphs, to the topic and wrap sentences — a technique commonly taught on ‘speed reading’ courses. When and if they look more closely inside the body of the paragraph, readers may also initially skip across token sentences. </p>
+            {publicationslist}            
 
         </div>
-
     )
+    }
 
 }
 
